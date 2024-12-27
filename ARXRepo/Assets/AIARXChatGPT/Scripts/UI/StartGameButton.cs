@@ -14,7 +14,7 @@ public class StartGameButton : MonoBehaviour
             return;
         }
 
-        if (WalletGameManager.Instance.GetIndeveloping())
+        if (WalletGameManager.Instance.IsInDevelopmentMode())
         {
             // In dev mode, just enable the button
             SetStartButtonInteractable(true);

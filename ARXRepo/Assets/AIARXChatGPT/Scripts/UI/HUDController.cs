@@ -41,20 +41,25 @@ public class HUDController : MonoBehaviour
     {
         var playerData = WalletGameManager.Instance.GetPlayerData();
 
-        rankText.text = $"{playerData.rank}";
-        influenceText.text = $"{playerData.influence}";
+        rankText.text = $"{playerData.playerState.rank}";
+        // make check for influence
+        if (!playerData.resources.ContainsKey("Influence"))
+        {
+            Debug.LogWarning("[HUDController] Missing 'Influence' in resources. Initializing to 0.");
+            playerData.resources["Influence"] = 0;
+        }
 
-        coinsText.text = $"{playerData.coins}";
-        foodText.text = $"{playerData.food}";
-        infantryText.text = $"{playerData.infantry}";
-        knightsText.text = $"{playerData.knights}";
-        ram.text = $"{playerData.ram}";
+        coinsText.text = $"{playerData.resources["Coins"]}";
+        foodText.text = $"{playerData.resources["Food"]}";
+        infantryText.text = $"{playerData.troops["Infantry"]}";
+        knightsText.text = $"{playerData.troops["Horsemen"]}";
+        ram.text = $"{playerData.troops["Machinery"]}";
 
         Debug.Log("[HUDController] HUD updated with current PlayerData.");
 
        // var playerData = WalletGameManager.Instance.GetPlayerData();
 
-        dateText.text = $"{playerData.day}/{playerData.month}/{playerData.year}";
+        dateText.text = $"{playerData.time.day}/{playerData.time.month}/{playerData.time.year}";
         actionPointsText.text = $"{playerData.actionPoints}";
     }
 

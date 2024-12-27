@@ -19,31 +19,31 @@ public class TimeSystem : MonoBehaviour
         var playerData = WalletGameManager.Instance.GetPlayerData();
 
         // Refresh Action Points based on rank
-        playerData.actionPoints = WalletGameManager.Instance.GetMaxActionPoints(playerData.rank);
+        playerData.actionPoints = RankManager.Instance.GetMaxActionPoints(playerData.playerState.rank);
 
         // Increment day
-        playerData.day++;
-        if (playerData.day > 30) // New month
+        playerData.time.day++;
+        if (playerData.time.day > 30) // New month
         {
-            playerData.day = 1;
-            playerData.month++;
-            if (playerData.month > 12) // New year
+            playerData.time.day = 1;
+            playerData.time.month++;
+            if (playerData.time.month > 12) // New year
             {
-                playerData.month = 1;
-                playerData.year++;
+                playerData.time.month = 1;
+                playerData.time.year++;
             }
         }
 
-        WalletGameManager.Instance.ManualSave(); // Save updated time and AP
+        WalletGameManager.Instance.SavePlayerData(); // Save updated time and AP
         HUDController.Instance.UpdateHUD();      // Update the UI
 
         // Check for rank-up notification
-        if (WalletGameManager.Instance.CanRankUp())
+        if (RankManager.Instance.CanRankUp(playerData))
         {
             HUDController.Instance.ShowRankUpNotification();
         }
 
-        Debug.Log($"[TimeSystem] New Day: {playerData.day}/{playerData.month}/{playerData.year}");
+        Debug.Log($"[TimeSystem] New Day: {playerData.time.day}/{playerData.time.month}/{playerData.time.year}");
     }
 
     public bool UseActionPoint(int cost)
@@ -53,7 +53,7 @@ public class TimeSystem : MonoBehaviour
         if (playerData.actionPoints >= cost)
         {
             playerData.actionPoints -= cost;
-            WalletGameManager.Instance.ManualSave(); // Save after using AP
+            WalletGameManager.Instance.SavePlayerData(); // Save after using AP
             HUDController.Instance.UpdateHUD();      // Update the UI
             Debug.Log($"[TimeSystem] Used {cost} AP. Remaining: {playerData.actionPoints}");
             return true;

@@ -23,8 +23,8 @@ public class ActionController : MonoBehaviour
     private void OnRecruitTroops()
     {
         Debug.Log("[ActionController] Recruit Troops clicked!");
-        WalletGameManager.Instance.GetPlayerData().infantry += 10; // Add 10 troops
-        WalletGameManager.Instance.ManualSave();
+        WalletGameManager.Instance.GetPlayerData().troops["Infantry"] += 10; // Add 10 troops
+        WalletGameManager.Instance.SavePlayerData();
         Debug.Log("Recruited 10 infantry. Updated PlayerData.");
         HUDController.Instance.UpdateHUD(); // Refresh HUD with new data
 
@@ -35,8 +35,8 @@ public class ActionController : MonoBehaviour
         if (TimeSystem.Instance.UseActionPoint(1)) // Deduct 1 AP
         {
             var playerData = WalletGameManager.Instance.GetPlayerData();
-            playerData.food += 50;
-            WalletGameManager.Instance.ManualSave();
+            playerData.resources["Food"] += 50;
+            WalletGameManager.Instance.SavePlayerData();
             HUDController.Instance.UpdateHUD();
         }
     }
@@ -46,8 +46,8 @@ public class ActionController : MonoBehaviour
         if (TimeSystem.Instance.UseActionPoint(1)) // Deduct 1 AP
         {
             var playerData = WalletGameManager.Instance.GetPlayerData();
-            playerData.ram += 1;
-            WalletGameManager.Instance.ManualSave();
+            playerData.troops["Machinery"] += 1;
+            WalletGameManager.Instance.SavePlayerData();
             HUDController.Instance.UpdateHUD();
         }
     }

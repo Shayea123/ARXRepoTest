@@ -126,7 +126,7 @@ public class TelegramIAWCustomAuth : MonoBehaviour
             return;
         }
         // If Indeveloping is true, enable the button immediately
-        if (WalletGameManager.Instance.GetIndeveloping())
+        if (WalletGameManager.Instance.IsInDevelopmentMode())
         {
             Debug.Log("[TelegramIAWCustomAuth] Indeveloping is true, enabling StartGameButton immediately.");
             SetStartButtonInteractable(true);

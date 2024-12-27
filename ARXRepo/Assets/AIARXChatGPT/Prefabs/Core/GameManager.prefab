@@ -10,8 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 4800208305480752907}
   - component: {fileID: 480546674845268670}
+  - component: {fileID: 2427487116901987518}
   m_Layer: 0
-  m_Name: WalletManager
+  m_Name: GameManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -44,6 +45,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce1585f5d20af64449a04045a2ffd9fc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  inDevelopmentMode: 1
   walletAddressText: {fileID: 0}
-  levelText: {fileID: 0}
-  scoreText: {fileID: 0}
+--- !u!114 &2427487116901987518
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2826638855754903644}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f0bdc817fba72344bf1c36c14bc189b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

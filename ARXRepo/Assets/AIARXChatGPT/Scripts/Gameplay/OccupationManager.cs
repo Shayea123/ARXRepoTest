@@ -14,48 +14,50 @@ public class OccupationManager : MonoBehaviour
         Instance = this;
     }
 
-    public void ChooseOccupation(string occupation)
+    public void ChooseOccupation(OccupationData newOccupation)
     {
         var playerData = WalletGameManager.Instance.GetPlayerData();
 
-        // Deduct 1 Action Point for choosing an occupation
+        // Deduct 1 Action Point
         if (!TimeSystem.Instance.UseActionPoint(1))
         {
             Debug.LogWarning("Not enough Action Points to choose an occupation!");
             return;
         }
 
-        playerData.occupation = occupation;
+        playerData.occupation = newOccupation.occupationName;
+        WalletGameManager.Instance.SavePlayerData();  // Save updated data
+        HUDController.Instance.UpdateHUD();  // Refresh HUD
 
-        WalletGameManager.Instance.ManualSave(); // Save updated data
-        HUDController.Instance.UpdateHUD();      // Refresh HUD
-
-        Debug.Log($"[OccupationManager] Occupation set to: {occupation}");
+        Debug.Log($"[OccupationManager] Occupation set to: {newOccupation.occupationName}");
     }
 
     public void GenerateMonthlyResources()
     {
         var playerData = WalletGameManager.Instance.GetPlayerData();
+        OccupationData currentOccupation = FindOccupationData(playerData.occupation);
 
-        switch (playerData.occupation)
+        if (currentOccupation != null)
         {
-            case "Farmer":
-                playerData.food += 30; // Example food production
-                break;
-            case "Miner":
-                playerData.coins += 50; // Example coin production
-                break;
-            case "Blacksmith":
-                playerData.technology += 10; // Example technology production
-                break;
-            default:
-                Debug.LogWarning("[OccupationManager] No occupation selected.");
-                break;
+            foreach (var bonus in currentOccupation.resourceBonuses)
+            {
+                playerData.resources[bonus.Key] += bonus.Value;
+            }
+            WalletGameManager.Instance.SavePlayerData();  // Save updated data
+            HUDController.Instance.UpdateHUD();  // Refresh HUD
+            Debug.Log($"[OccupationManager] Resources generated for occupation: {playerData.occupation}");
         }
-
-        WalletGameManager.Instance.ManualSave(); // Save updated data
-        HUDController.Instance.UpdateHUD();      // Refresh HUD
-
-        Debug.Log($"[OccupationManager] Resources generated for occupation: {playerData.occupation}");
+        else
+        {
+            Debug.LogWarning("[OccupationManager] No valid occupation found.");
+        }
     }
+
+    private OccupationData FindOccupationData(string occupationName)
+    {
+        return null;
+        // Search through all OccupationData assets for a match
+        // (Assumes you have a centralized OccupationDatabase or list)
+    }
+
 }

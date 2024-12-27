@@ -1,64 +1,105 @@
-using System.Collections.Generic;
 using System;
+using System.Collections.Generic;
 
 [Serializable]
 public class PlayerData
 {
-    public string walletAddress;
+    public string walletAddress;       // Player's unique wallet address
 
-    public int coins;
-    public int food;
-    public int technology;        // Technology points
-    public int infantry;
-    public int knights;
-    public int ram;               // Siege weapon
+    // Resources
+    public Dictionary<string, int> resources;
 
-    public string rank;
-    public int actionPoints;      // Remaining Action Points
-    public int day;               // Current day
-    public int month;             // Current month
-    public int year;              // Current year
-    public int influence;
+    // Troops
+    public Dictionary<string, int> troops;
 
-    public bool isEnslaved;       // Whether the player is enslaved
+    // Commanders (Only store IDs for reference)
+    public List<int> commanderIds;
 
-    public string occupation;     // Current occupation (Farmer, Blacksmith, etc.)
-    public List<string> specialCards;  // List of owned special cards
-    public List<Commander> commanders; // List of assigned commanders
+    // Cards (Only store IDs for reference)
+    public List<int> cardIds;
 
-    // Constructor for initializing new data
+    // Buildings (Only store IDs for reference)
+    public List<int> buildingIds;
+
+    // Quests (Only store IDs for reference)
+    public List<int> questIds;
+
+    // Player State (Social and Military Rank)
+    public PlayerState playerState;
+
+    // Action Points
+    public int actionPoints;
+
+    public string occupation;  // Current occupation (e.g., Farmer, Miner, Blacksmith)
+
+
+    // Time System
+    public TimeData time;
+
+    // Constructor
     public PlayerData(string walletAddress)
     {
         this.walletAddress = walletAddress;
-        coins = 100;
-        food = 50;
-        technology = 0;
 
-        infantry = 0;
-        knights = 0;
-        ram = 0;
+        // Initialize Resources
+        resources = new Dictionary<string, int>
+        {
+            { "Coins", 100 },
+            { "Food", 50 },
+            { "Tech", 0 },
+            { "Influence", 0 }
+        };
 
-        rank = "Freeman";
-        actionPoints = 3;      // Default AP for Freeman
-        day = 1;
-        month = 1;
-        year = 1;
+        // Initialize Troops
+        troops = new Dictionary<string, int>
+        {
+            { "Infantry", 0 },
+            { "Horsemen", 0 },
+            { "Machinery", 0 }
+        };
 
-        influence = 0;
-        isEnslaved = false;
+        occupation = "None";  // Default occupation
 
-        occupation = "None";  // No occupation initially
-        specialCards = new List<string>();
-        commanders = new List<Commander>();
+        // Initialize Lists
+        commanderIds = new List<int>();
+        cardIds = new List<int>();
+        buildingIds = new List<int>();
+        questIds = new List<int>();
+
+        // Initialize Player State
+        playerState = new PlayerState
+        {
+            rank = "Freeman",
+            socialLevel = 1,
+            militaryLevel = 1
+        };
+
+        // Initialize Action Points
+        actionPoints = 3;  // Default for "Freeman"
+
+        // Initialize Time
+        time = new TimeData
+        {
+            day = 1,
+            month = 1,
+            year = 1
+        };
     }
 }
 
-// Commander Class
 [Serializable]
-public class Commander
+public class PlayerState
 {
-    public int id;                 // Unique ID for each commander
-    public string name;            // Commander name
-    public string specialty;       // Specialty (e.g., Viking, Archer, etc.)
-    public bool assigned;          // Whether the commander is assigned to a task
+    public string rank;          // Current rank (e.g., Freeman, Soldier)
+    public int socialLevel;      // Social progression level
+    public int militaryLevel;    // Military progression level
 }
+
+[Serializable]
+public class TimeData
+{
+    public int day;              // Current day
+    public int month;            // Current month
+    public int year;             // Current year
+}
+
