@@ -577,7 +577,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9e81f2d1a1d6d2b45af5ff1f1571258f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  troops: []
+  troops:
+  - {fileID: 11400000, guid: 03de2755f41bc8d43b0e7dfcb4d7a756, type: 2}
 --- !u!114 &750589045
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -590,7 +591,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 331edd7289a6d754abe184300e83ea1d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  quests: []
+  quests:
+  - {fileID: 11400000, guid: 7ea368b5078925e4a80a4de97f613936, type: 2}
 --- !u!114 &750589046
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -603,7 +605,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f7e5763425909cd4dafb49dfb7ab08d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  occupations: []
+  occupations:
+  - {fileID: 11400000, guid: 30b81901130252a4e89285213bef0afc, type: 2}
 --- !u!114 &750589047
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -616,7 +619,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d6deff4be3683447956e3c8035bff87, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  commanders: []
+  commanders:
+  - {fileID: 11400000, guid: c2404b91428fbda4d8f7323be601d27e, type: 2}
 --- !u!114 &750589048
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -629,7 +633,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c726594d380456d439f9ff97ab6822ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cards: []
+  cards:
+  - {fileID: 11400000, guid: a8369231e094f0c41b38aadf244ddfae, type: 2}
 --- !u!114 &750589049
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -642,7 +647,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31af9395459f7c247ad6267bdeb8e29c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  buildings: []
+  buildings:
+  - {fileID: 11400000, guid: a39372c45c5e84243adf373d7734cb8d, type: 2}
 --- !u!114 &750589050
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -996,11 +1002,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3675443228969384594, guid: b113370bed967f44985a5a434d46055c, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -531.45404
+      value: -528.4884
       objectReference: {fileID: 0}
     - target: {fileID: 3675443228969384594, guid: b113370bed967f44985a5a434d46055c, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -17.804155
+      value: -34.883724
       objectReference: {fileID: 0}
     - target: {fileID: 7790585828850916743, guid: b113370bed967f44985a5a434d46055c, type: 3}
       propertyPath: m_Pivot.x

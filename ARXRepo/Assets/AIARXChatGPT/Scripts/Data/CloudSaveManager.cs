@@ -21,164 +21,113 @@ public class CloudSaveManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
-    public async Task SaveProgress(PlayerData playerData)
+    public async Task SavePlayerData(PlayerData playerData)
     {
         try
         {
-            Debug.Log("[SaveProgress] Saving PlayerData...");
-            Debug.Log($"[SaveProgress] PlayerData: {Newtonsoft.Json.JsonConvert.SerializeObject(playerData)}");
-
             var data = new Dictionary<string, object>
         {
             { "walletAddress", playerData.walletAddress },
-            { "resources", Newtonsoft.Json.JsonConvert.SerializeObject(playerData.resources) },
-            { "troops", Newtonsoft.Json.JsonConvert.SerializeObject(playerData.troops) },
-            { "commanderIds", Newtonsoft.Json.JsonConvert.SerializeObject(playerData.commanderIds) },
-            { "cardIds", Newtonsoft.Json.JsonConvert.SerializeObject(playerData.cardIds) },
-            { "buildingIds", Newtonsoft.Json.JsonConvert.SerializeObject(playerData.buildingIds) },
-            { "questIds", Newtonsoft.Json.JsonConvert.SerializeObject(playerData.questIds) },
-            { "playerState", Newtonsoft.Json.JsonConvert.SerializeObject(playerData.playerState) },
-            { "time", Newtonsoft.Json.JsonConvert.SerializeObject(playerData.time) },
-            { "actionPoints", playerData.actionPoints },
-            { "occupation", playerData.occupation }
+            { "Resources", JsonConvert.SerializeObject(playerData.resources) },
+            { "Troops", JsonConvert.SerializeObject(playerData.troops) },
+            { "CommanderIds", JsonConvert.SerializeObject(playerData.commanderIds) },
+            { "CardIds", JsonConvert.SerializeObject(playerData.cardIds) },
+            { "BuildingIds", JsonConvert.SerializeObject(playerData.buildingIds) },
+            { "QuestIds", JsonConvert.SerializeObject(playerData.questIds) },
+            { "PlayerState", JsonConvert.SerializeObject(playerData.playerState) },
+            { "Time", JsonConvert.SerializeObject(playerData.time) },
+            { "ActionPoints", playerData.actionPoints },
+            {"occupation", playerData.occupation}
         };
 
-            Debug.Log($"[SaveProgress] Data to save: {Newtonsoft.Json.JsonConvert.SerializeObject(data)}");
-
             await CloudSaveService.Instance.Data.Player.SaveAsync(data);
-            Debug.Log("[SaveProgress] PlayerData saved successfully.");
+            Debug.Log("[CloudSaveManager] PlayerData saved successfully.");
         }
         catch (Exception ex)
         {
-            Debug.LogError($"[SaveProgress] Failed to save PlayerData: {ex.Message}");
+            Debug.LogError($"[CloudSaveManager] Save failed: {ex.Message}");
         }
     }
 
 
-    public async Task<PlayerData> LoadProgress(string walletAddress)
+
+    public async Task<PlayerData> LoadPlayerData(string walletAddress)
     {
         try
         {
-            Debug.Log($"[LoadProgress] Starting load for Wallet: {walletAddress}");
-
             var keys = new HashSet<string>
         {
-            "walletAddress", "resources", "troops", "commanderIds", "cardIds",
-            "buildingIds", "questIds", "playerState", "time", "actionPoints", "occupation"
+            "walletAddress", "Resources", "Troops", "CommanderIds", "CardIds",
+            "BuildingIds", "QuestIds", "PlayerState", "Time", "ActionPoints"
         };
 
             var cloudData = await CloudSaveService.Instance.Data.Player.LoadAsync(keys);
+
+            Debug.Log("[CloudSaveManager] Dumping raw Cloud Save data:");
+            foreach (var kvp in cloudData)
+            {
+                Debug.Log($"Key: {kvp.Key} -> Value: {kvp.Value.Value}");
+            }
+
+
             PlayerData playerData = new PlayerData(walletAddress);
 
-            // Load each key and handle defaults
-            playerData.walletAddress = cloudData.TryGetValue("walletAddress", out var walletAddressData)
-                ? walletAddressData.Value.ToString()
-                : walletAddress;
+            if (cloudData.TryGetValue("walletAddress", out var walletAddressData))
+            {
+                // Convert directly to string instead of using .ToString()
+                playerData.walletAddress = walletAddressData.Value.GetAsString();
 
-            playerData.resources = ParseJsonOrDefault(cloudData, "resources", new Dictionary<string, int>());
-            playerData.troops = ParseJsonOrDefault(cloudData, "troops", new Dictionary<string, int>());
-            playerData.commanderIds = ParseJsonOrDefault(cloudData, "commanderIds", new List<int>());
-            playerData.cardIds = ParseJsonOrDefault(cloudData, "cardIds", new List<int>());
-            playerData.buildingIds = ParseJsonOrDefault(cloudData, "buildingIds", new List<int>());
-            playerData.questIds = ParseJsonOrDefault(cloudData, "questIds", new List<int>());
-            playerData.playerState = ParseJsonOrDefault(cloudData, "playerState", new PlayerState { rank = "Freeman", socialLevel = 1, militaryLevel = 1 });
-            playerData.time = ParseJsonOrDefault(cloudData, "time", new TimeData { day = 1, month = 1, year = 1 });
-            playerData.actionPoints = cloudData.TryGetValue("actionPoints", out var actionPointsData)
-                ? int.Parse(actionPointsData.Value.ToString())
-                : 3;
+                string resourcesJson = cloudData["Resources"].Value.GetAsString();
+                playerData.resources =
+                    JsonConvert.DeserializeObject<Dictionary<string, int>>(resourcesJson);
 
-            playerData.occupation = cloudData.TryGetValue("occupation", out var occupationData)
-                ? occupationData.Value.ToString()
-                : "None"; // Default to "None" if not found
+                string troopsJson = cloudData["Troops"].Value.GetAsString();
+                playerData.troops =
+                    JsonConvert.DeserializeObject<Dictionary<string, int>>(troopsJson);
 
-            Debug.Log("[LoadProgress] PlayerData loaded successfully.");
+                string commanderJson = cloudData["CommanderIds"].Value.GetAsString();
+                playerData.commanderIds =
+                    JsonConvert.DeserializeObject<List<int>>(commanderJson);
+
+                // ...and so on for each key you saved as JSON:
+                string cardIdsJson = cloudData["CardIds"].Value.GetAsString();
+                playerData.cardIds = JsonConvert.DeserializeObject<List<int>>(cardIdsJson);
+
+                string buildingIdsJson = cloudData["BuildingIds"].Value.GetAsString();
+                playerData.buildingIds = JsonConvert.DeserializeObject<List<int>>(buildingIdsJson);
+
+                string questIdsJson = cloudData["QuestIds"].Value.GetAsString();
+                playerData.questIds = JsonConvert.DeserializeObject<List<int>>(questIdsJson);
+
+                string playerStateJson = cloudData["PlayerState"].Value.GetAsString();
+                playerData.playerState = JsonConvert.DeserializeObject<PlayerState>(playerStateJson);
+
+                string timeJson = cloudData["Time"].Value.GetAsString();
+                playerData.time = JsonConvert.DeserializeObject<TimeData>(timeJson);
+
+                playerData.actionPoints = int.Parse(
+                    cloudData["ActionPoints"].Value.GetAsString()
+                );
+
+                // occupation is a simple string, so .ToString() is fine:
+                if (cloudData.TryGetValue("occupation", out var occupationData))
+                {
+                    playerData.occupation = occupationData.Value.GetAsString();
+                }
+            }
+            else
+            {
+                Debug.LogWarning("[CloudSaveManager] No PlayerData found. Creating new PlayerData...");
+                await SavePlayerData(playerData);  // Save the newly created PlayerData
+            }
+
+            Debug.Log("[CloudSaveManager] PlayerData loaded successfully.");
             return playerData;
         }
         catch (Exception ex)
         {
-            Debug.LogError($"[LoadProgress] Failed to load PlayerData: {ex.Message}");
-            return new PlayerData(walletAddress); // Fallback to default data
+            Debug.LogError($"[CloudSaveManager] Load failed: {ex.Message}");
+            return null;  // Return null to signal failure
         }
     }
-
-    private T ParseJsonOrDefault<T>(Dictionary<string, Item> cloudData, string key, T defaultValue)
-    {
-        if (cloudData.TryGetValue(key, out var jsonData))
-        {
-            try
-            {
-                Debug.Log($"[ParseJsonOrDefault] Found key '{key}': {jsonData.Value}");
-                return Newtonsoft.Json.JsonConvert.DeserializeObject<T>(jsonData.Value.ToString());
-            }
-            catch (Exception ex)
-            {
-                Debug.LogWarning($"[ParseJsonOrDefault] Failed to parse key '{key}': {ex.Message}");
-            }
-        }
-        else
-        {
-            Debug.LogWarning($"[ParseJsonOrDefault] Key '{key}' not found; using default value.");
-        }
-
-        return defaultValue;
-    }
-
-
-
-
-    private Dictionary<string, int> LoadDictionary(Dictionary<string, Item> cloudData, string key, Dictionary<string, int> defaultValue)
-    {
-        if (cloudData.TryGetValue(key, out var jsonData))
-        {
-            try
-            {
-                var loadedData = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, int>>(jsonData.Value.ToString());
-
-                // Ensure all default keys are present
-                foreach (var defaultKey in defaultValue.Keys)
-                {
-                    if (!loadedData.ContainsKey(defaultKey))
-                    {
-                        loadedData[defaultKey] = defaultValue[defaultKey];
-                    }
-                }
-
-                return loadedData;
-            }
-            catch (Exception ex)
-            {
-                Debug.LogWarning($"[LoadDictionary] Failed to parse key '{key}': {ex.Message}");
-            }
-        }
-        else
-        {
-            Debug.LogWarning($"[LoadDictionary] Key '{key}' not found; using default value.");
-        }
-
-        return defaultValue;
-    }
-
-
-    private List<int> LoadList(Dictionary<string, Item> cloudData, string key, List<int> defaultValue)
-    {
-        if (cloudData.TryGetValue(key, out var jsonData))
-        {
-            try
-            {
-                return JsonUtility.FromJson<List<int>>(jsonData.Value.ToString());
-            }
-            catch
-            {
-                Debug.LogWarning($"[LoadList] Failed to parse key '{key}'; using default value.");
-            }
-        }
-        else
-        {
-            Debug.LogWarning($"[LoadList] Missing key '{key}'; using default value.");
-        }
-
-        return defaultValue;
-    }
-
-
 }

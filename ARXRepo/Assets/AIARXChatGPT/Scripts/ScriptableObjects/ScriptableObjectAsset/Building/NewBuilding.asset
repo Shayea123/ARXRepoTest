@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1831662cb069a9e40a67ff451a0ef7f4, type: 3}
+  m_Name: NewBuilding
+  m_EditorClassIdentifier: 
+  id: 1
+  name: buids
+  maxLevel: 1
+  icon: {fileID: 21300000, guid: 071cadea3b83c6f4185b46950110a236, type: 3}

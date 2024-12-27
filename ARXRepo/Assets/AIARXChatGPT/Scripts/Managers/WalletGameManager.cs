@@ -43,23 +43,28 @@ public class WalletGameManager : MonoBehaviour
             // Initialize Unity Services
             await UnityServices.InitializeAsync();
 
-            // Check and handle user authentication
             if (!AuthenticationService.Instance.IsSignedIn)
             {
-                Debug.Log("[InitializeWallet] User not signed in. Attempting anonymous sign-in.");
-                await AuthenticationService.Instance.SignInAnonymouslyAsync();
-            }
-            else if (!AuthenticationService.Instance.SessionTokenExists)
-            {
-                Debug.LogWarning("[InitializeWallet] Session token expired. Re-authenticating.");
-                AuthenticationService.Instance.ClearSessionToken();
+                // No user signed in yet, so do an anonymous sign?in.
+                Debug.Log("User not signed in. Attempting anonymous sign?in.");
                 await AuthenticationService.Instance.SignInAnonymouslyAsync();
             }
             else
             {
-                Debug.Log("[InitializeWallet] User is already signed in.");
+                // The user is “signed in” but we need to check if the token is valid or not.
+                if (!AuthenticationService.Instance.IsAuthorized)
+                {
+                    // If they have a session token but it’s invalid or expired,
+                    // we can clear the old token and re-sign in.
+                    Debug.Log("Session token invalid—re?signing in.");
+                    AuthenticationService.Instance.ClearSessionToken();
+                    await AuthenticationService.Instance.SignInAnonymouslyAsync();
+                }
+                else
+                {
+                    Debug.Log("User is already signed in with a valid session token.");
+                }
             }
-            Debug.Log("[InitializeWallet] Authentication successful.");
 
             // Initialize Thirdweb SDK and fetch wallet address
             try
@@ -86,7 +91,7 @@ public class WalletGameManager : MonoBehaviour
             try
             {
                 Debug.Log("[InitializeWallet] Loading PlayerData...");
-                playerData = await CloudSaveManager.Instance.LoadProgress(walletAddress);
+                playerData = await CloudSaveManager.Instance.LoadPlayerData(walletAddress);
                 Debug.Log("[InitializeWallet] PlayerData loaded successfully.");
             }
             catch (Exception ex)
@@ -110,7 +115,7 @@ public class WalletGameManager : MonoBehaviour
 
     public async void SavePlayerData()
     {
-        await CloudSaveManager.Instance.SaveProgress(playerData);
+        await CloudSaveManager.Instance.SavePlayerData(playerData);
     }
 
     public string GetWalletAddress() => walletAddress;
