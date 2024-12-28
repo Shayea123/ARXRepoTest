@@ -12,7 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 68a005fa2cfa5804bb574f78379ec089, type: 3}
   m_Name: NewCommandertest
   m_EditorClassIdentifier: 
-  id: 2
-  name: testcomm
+  id: 1
+  name: KAZA
   specialty: 1
   portrait: {fileID: 21300000, guid: f613827a3c667ec40b5b739c13f5524c, type: 3}
+  bonuses:
+  - bonusName: Infantry
+    bonusValue: 100
